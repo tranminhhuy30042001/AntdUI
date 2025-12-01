@@ -15,22 +15,32 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# AutoForm Documentation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Overview
+**AutoForm** is a dynamic, type-safe React form built with Ant Design.  
+It allows developers to define a form schema that supports:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Multiple field types (`input`, `select`)
+- Validation rules
+- Dependent (cascading) selects
+- Custom column layouts using Ant Design grid (`Row` / `Col`)
+- Automatic API fetching for select options
 
-## Learn More
+The form is generic and type-safe, fully leveraging TypeScript for field names and values.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Interfaces
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### `Option`
+Represents a single selectable item for a Select field.
 
-## Deploy on Vercel
+| Property | Type           | Description                     |
+|----------|----------------|---------------------------------|
+| value    | `string \| number` | The actual value stored in the form |
+| label    | `string`       | The display text for the option |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+**Example:**
+```ts
+{ value: "dev", label: "Development" }
