@@ -44,3 +44,15 @@ Represents a single selectable item for a Select field.
 **Example:**
 ```ts
 { value: "dev", label: "Development" }
+```
+
+```
+{
+  name: "department",
+  label: "Department",
+  type: "select",
+  api: "/api/departments",
+  colSpan: 24,
+  rules: [{ required: true, message: "Select a department" }]
+}
+```
