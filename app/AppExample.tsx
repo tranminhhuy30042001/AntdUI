@@ -14,7 +14,11 @@ interface FormValues {
   role: string;
   country: string;
   city: string;
-  [key: string]: string; // flexible for additional fields
+  age: number;
+  agree: boolean;
+  bio: string;
+  website: string;
+  [key: string]: any;
 }
 
 // =======================
@@ -104,18 +108,26 @@ if (typeof window !== "undefined") {
 const schema: FieldSchema<FormValues>[] = [
   { name: "firstName", label: "First Name", type: "input", colSpan: 8, rules: [{ required: true, message: "First name is required" }] },
   { name: "lastName", label: "Last Name", type: "input", colSpan: 8, rules: [{ required: true, message: "Last name is required" }] },
+  { name: "age", label: "Age", type: "number", colSpan: 8, rules: [{ required: true, message: "Age is required" }], suffix: "years" },
   { name: "department", label: "Department", type: "select", api: "/api/departments", colSpan: 8, rules: [{ required: true, message: "Select a department" }] },
   { name: "team", label: "Team", type: "select", api: "/api/teams", dependsOn: "department", colSpan: 12, rules: [{ required: true, message: "Select a team" }] },
   { name: "role", label: "Role", type: "select", api: "/api/roles", colSpan: 12, rules: [{ required: true, message: "Select a role" }] },
   { name: "country", label: "Country", type: "select", api: "/api/countries", colSpan: 12, rules: [{ required: true, message: "Select a country" }] },
   { name: "city", label: "City", type: "select", api: "/api/cities", dependsOn: "country", colSpan: 12, rules: [{ required: true, message: "Select a city" }] },
+  { name: "website", label: "Website", type: "autocomplete", autoComplete: ["google.com", "facebook.com", "twitter.com"], colSpan: 24 },
+  { name: "bio", label: "Bio", type: "textarea", colSpan: 24 },
+  { name: "agree", label: "I agree to terms", type: "checkbox", colSpan: 24, rules: [{ required: true, message: "You must agree" }] },
+
+  // Upload file
+  { name: "profilePicture", label: "Profile Picture", type: "upload", colSpan: 12, rules: [{ required: true, message: "Upload a profile picture" }] },
+
+  // Dragger multiple files
+  { name: "attachments", label: "Attachments", type: "dragger", colSpan: 12, rules: [{ required: true, message: "Upload at least one file" }] },
 ];
 
 // =======================
 // AppExample
 // =======================
-
-
 export const AppExample: React.FC = () => {
   const [form, setForm] = React.useState<FormInstance<any>>();
 
@@ -125,14 +137,18 @@ export const AppExample: React.FC = () => {
 
   return (
     <div style={{ maxWidth: 800, margin: "20px auto" }}>
-      <h2>AutoForm Example with Custom Buttons & Live Data</h2>
+      <h2>AutoForm Full Example</h2>
       <AutoForm
         schema={schema}
         onSubmit={handleSubmit}
         form={form}
         renderButtons={(form) => (
           <>
-            <Button type="default" onClick={() => console.log("Current form data:", form.getFieldsValue())} style={{ marginRight: 8 }}>
+            <Button
+              type="default"
+              onClick={() => console.log("Current form data:", form.getFieldsValue())}
+              style={{ marginRight: 8 }}
+            >
               Show Data
             </Button>
             <Button type="primary" htmlType="submit">Submit</Button>
@@ -142,4 +158,3 @@ export const AppExample: React.FC = () => {
     </div>
   );
 };
-
