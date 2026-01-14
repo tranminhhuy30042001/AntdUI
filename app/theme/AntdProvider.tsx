@@ -8,7 +8,11 @@ export default function AntdProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { theme } = useTheme();
+  const { appliedTheme } = useTheme();
 
-  return <ConfigProvider theme={theme}>{children}</ConfigProvider>;
+  return (
+    <ConfigProvider theme={appliedTheme}>
+      {children}
+    </ConfigProvider>
+  );
 }

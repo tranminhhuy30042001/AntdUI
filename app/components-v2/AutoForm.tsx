@@ -10,8 +10,8 @@ export interface Option {
   label: string;
 }
 
-export type FieldType = 
-  | "input" | "select" | "autocomplete" | "number" 
+export type FieldType =
+  | "input" | "select" | "autocomplete" | "number"
   | "checkbox" | "textarea" | "upload" | "dragger";
 
 export interface FieldSchema<T> {
@@ -48,6 +48,8 @@ export const AutoForm = <T extends Record<string, unknown>>({
   const [optionsMap, setOptionsMap] = useState<Record<string, Option[]>>({});
   const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
   const [mounted, setMounted] = useState(false);
+  const hasStaticOptions = (field: FieldSchema<T>) =>
+    Array.isArray(field.options) && field.options.length > 0;
 
   useEffect(() => setMounted(true), []);
 
@@ -64,7 +66,7 @@ export const AutoForm = <T extends Record<string, unknown>>({
       const res = await fetch(url);
       if (!res.ok) throw new Error("Network response was not ok");
       const data = (await res.json()) as Option[];
-      
+
       console.log(`✅ [Success] Field: ${key}`, data);
       setOptionsMap((prev) => ({ ...prev, [key]: data }));
     } catch (err) {
@@ -77,34 +79,51 @@ export const AutoForm = <T extends Record<string, unknown>>({
 
   useEffect(() => {
     schema.forEach((f) => {
-      if (f.type === "select" && !f.dependsOn && f.api) {
-        fetchOptions(f.name, f.api);
+      if (f.type === "select" && !f.dependsOn) {
+        if (hasStaticOptions(f)) {
+          setOptionsMap((prev) => ({
+            ...prev,
+            [String(f.name)]: f.options!,
+          }));
+        } else if (f.api) {
+          fetchOptions(f.name, f.api);
+        }
       }
     });
   }, [schema, fetchOptions]);
 
   const handleValuesChange = (changedValues: Partial<T>) => {
-    // Lấy key đầu tiên bị thay đổi
     const changedKey = Object.keys(changedValues)[0] as keyof T;
     const newValue = changedValues[changedKey];
 
     schema.forEach((field) => {
       if (field.dependsOn === changedKey) {
+        const fieldKey = String(field.name);
         const targetPath = field.name as unknown as NamePath<T>;
-        
-        console.log(`[Reset] ${String(field.name)} due to ${String(changedKey)} change`);
-        
-        // Reset giá trị trên UI
+
+        console.log(`[Reset] ${fieldKey} due to ${String(changedKey)} change`);
+
         usedForm.setFieldValue(targetPath, undefined);
-        
-        // Xóa danh sách option cũ
-        setOptionsMap((prev) => ({ 
-          ...prev, 
-          [String(field.name)]: [] 
+
+        if (hasStaticOptions(field)) {
+          setOptionsMap((prev) => ({
+            ...prev,
+            [fieldKey]: field.options!,
+          }));
+          return;
+        }
+
+        setOptionsMap((prev) => ({
+          ...prev,
+          [fieldKey]: [],
         }));
 
-        // Gọi fetch mới nếu có giá trị cha
-        if (field.api && newValue !== undefined && newValue !== null && newValue !== "") {
+        if (
+          field.api &&
+          newValue !== undefined &&
+          newValue !== null &&
+          newValue !== ""
+        ) {
           fetchOptions(field.name, field.api, newValue);
         }
       }
@@ -123,11 +142,11 @@ export const AutoForm = <T extends Record<string, unknown>>({
       <Row gutter={[16, 0]}>
         {schema.map((field) => {
           const fieldNameStr = String(field.name);
-          
-          const isFieldDisabled = field.dependsOn 
-            ? !usedForm.getFieldValue(field.dependsOn as unknown as NamePath<T>) 
+
+          const isFieldDisabled = field.dependsOn
+            ? !usedForm.getFieldValue(field.dependsOn as unknown as NamePath<T>)
             : false;
-          
+
           return (
             <Col key={fieldNameStr} span={field.colSpan ?? 24}>
               <AutoField<T>

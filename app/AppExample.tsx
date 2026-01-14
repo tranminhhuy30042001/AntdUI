@@ -135,7 +135,7 @@ const schema: FieldSchema<FormValues>[] = [
   { name: "firstName", label: "First Name", type: "input", colSpan: 8, rules: [{ required: true, message: "First name is required" }] },
   { name: "lastName", label: "Last Name", type: "input", colSpan: 8, rules: [{ required: true, message: "Last name is required" }] },
   { name: "age", label: "Age", type: "number", colSpan: 8, rules: [{ required: true, message: "Age is required" }], suffix: "years" },
-  { name: "department", label: "Department", type: "select", api: "/api/departments", colSpan: 8, rules: [{ required: true, message: "Select a department" }] },
+  { name: "department", label: "Department", type: "select", options: mockDepartments, colSpan: 8, rules: [{ required: true, message: "Select a department" }] },
   { name: "team", label: "Team", type: "select", api: "/api/teams", dependsOn: "department", colSpan: 12, rules: [{ required: true, message: "Select a team" }] },
   { name: "role", label: "Role", type: "select", api: "/api/roles", colSpan: 12, rules: [{ required: true, message: "Select a role" }] },
   { name: "country", label: "Country", type: "select", api: "/api/countries", colSpan: 12, rules: [{ required: true, message: "Select a country" }] },
@@ -145,10 +145,10 @@ const schema: FieldSchema<FormValues>[] = [
   { name: "agree", label: "I agree to terms", type: "checkbox", colSpan: 24, rules: [{ required: true, message: "You must agree" }] },
 
   // Upload file
-  { name: "profilePicture", label: "Profile Picture", type: "upload", colSpan: 12, rules: [{ required: true, message: "Upload a profile picture" }] },
+  { name: "profilePicture", label: "Profile Picture", type: "upload", colSpan: 12},
 
   // Dragger multiple files
-  { name: "attachments", label: "Attachments", type: "dragger", colSpan: 12, rules: [{ required: true, message: "Upload at least one file" }] },
+  { name: "attachments", label: "Attachments", type: "dragger", colSpan: 12}
 ];
 
 // =======================
