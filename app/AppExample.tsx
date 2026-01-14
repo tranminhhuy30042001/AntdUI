@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { AutoForm, FieldSchema, Option } from "./components/AutoForm";
+import { AutoForm, FieldSchema, Option } from "./components-v2/AutoForm";
 import { Button, FormInstance } from "antd";
 
 // =======================
@@ -77,25 +77,51 @@ const mockCities: Record<string, Option[]> = {
 // =======================
 // Mock fetch client-side
 // =======================
-const fetchApi = (url: string): Promise<{ json: () => Option[] }> => {
+// =======================
+// Mock fetch client-side - FIX LỖI "o.text is not a function"
+// =======================
+const fetchApi = (url: string): Promise<Response> => {
+  console.log(`🚀 [AutoForm Fetch] Calling: ${url}`);
+
   return new Promise((resolve) => {
     setTimeout(() => {
-      if (url.includes("/api/departments")) resolve({ json: () => mockDepartments });
-      if (url.includes("/api/teams")) {
+      let data: Option[] = [];
+
+      // Logic lấy dữ liệu dựa trên URL (giữ nguyên logic của bạn)
+      if (url.includes("/api/departments")) {
+        data = mockDepartments;
+      } else if (url.includes("/api/teams")) {
         const params = new URLSearchParams(url.split("?")[1]);
         const parent = params.get("parent") || "";
-        resolve({ json: () => mockTeams[parent] || [] });
-      }
-      if (url.includes("/api/roles")) resolve({ json: () => mockRoles });
-      if (url.includes("/api/countries")) resolve({ json: () => mockCountries });
-      if (url.includes("/api/cities")) {
+        data = mockTeams[parent] || [];
+      } else if (url.includes("/api/roles")) {
+        data = mockRoles;
+      } else if (url.includes("/api/countries")) {
+        data = mockCountries;
+      } else if (url.includes("/api/cities")) {
         const params = new URLSearchParams(url.split("?")[1]);
         const country = params.get("parent") || "";
-        resolve({ json: () => mockCities[country] || [] });
+        data = mockCities[country] || [];
       }
+
+      console.log(`✅ [AutoForm Success] Data for ${url}:`, data);
+
+      // TRẢ VỀ RESPONSE ĐÚNG CHUẨN
+      resolve({
+        ok: true,
+        status: 200,
+        json: async () => data,
+        text: async () => JSON.stringify(data),
+        headers: new Headers(),
+      } as Response); 
     }, 500);
   });
 };
+
+// Override global fetch
+if (typeof window !== "undefined") {
+  (window as any).fetch = fetchApi;
+}
 
 // Override global fetch for AutoForm
 if (typeof window !== "undefined") {
@@ -136,7 +162,7 @@ export const AppExample: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: 800, margin: "20px auto" }}>
+    <div style={{ maxWidth: 500, margin: "20px auto" }}>
       <h2>AutoForm Full Example</h2>
       <AutoForm
         schema={schema}
