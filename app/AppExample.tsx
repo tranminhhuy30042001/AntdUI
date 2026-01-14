@@ -113,7 +113,7 @@ const fetchApi = (url: string): Promise<Response> => {
         json: async () => data,
         text: async () => JSON.stringify(data),
         headers: new Headers(),
-      } as Response); 
+      } as Response);
     }, 500);
   });
 };
@@ -131,6 +131,10 @@ if (typeof window !== "undefined") {
 // =======================
 // Schema
 // =======================
+//name & label luôn khai báo
+//type xem trong FieldSchema (require)
+//colSpan: chia ô 24 ô là 100% width (option)
+//dependsOn: yêu cầu chọn name của 1 loại nào trước khi chọn mình
 const schema: FieldSchema<FormValues>[] = [
   { name: "firstName", label: "First Name", type: "input", colSpan: 8, rules: [{ required: true, message: "First name is required" }] },
   { name: "lastName", label: "Last Name", type: "input", colSpan: 8, rules: [{ required: true, message: "Last name is required" }] },
@@ -143,12 +147,26 @@ const schema: FieldSchema<FormValues>[] = [
   { name: "website", label: "Website", type: "autocomplete", autoComplete: ["google.com", "facebook.com", "twitter.com"], colSpan: 24 },
   { name: "bio", label: "Bio", type: "textarea", colSpan: 24 },
   { name: "agree", label: "I agree to terms", type: "checkbox", colSpan: 24, rules: [{ required: true, message: "You must agree" }] },
+  {
+    name: "skills",
+    label: "Skills",
+    type: "multi-select",
+    options: [
+      { value: "react", label: "React" },
+      { value: "vue", label: "Vue" },
+      { value: "angular1", label: "Angular1" },
+      { value: "angular2", label: "Angular2" },
+      { value: "angular3", label: "Angular3" },
+      { value: "angular4", label: "Angular4" },
+    ],
+    colSpan: 12,
+  },
 
   // Upload file
-  { name: "profilePicture", label: "Profile Picture", type: "upload", colSpan: 12},
+  { name: "profilePicture", label: "Profile Picture", type: "upload", colSpan: 12 },
 
   // Dragger multiple files
-  { name: "attachments", label: "Attachments", type: "dragger", colSpan: 12}
+  { name: "attachments", label: "Attachments", type: "dragger", colSpan: 12 }
 ];
 
 // =======================

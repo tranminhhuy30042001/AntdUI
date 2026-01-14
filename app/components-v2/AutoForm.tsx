@@ -12,7 +12,8 @@ export interface Option {
 
 export type FieldType =
   | "input" | "select" | "autocomplete" | "number"
-  | "checkbox" | "textarea" | "upload" | "dragger";
+  | "checkbox" | "textarea" | "upload" | "dragger"
+  | "multi-select";
 
 export interface FieldSchema<T> {
   name: keyof T;

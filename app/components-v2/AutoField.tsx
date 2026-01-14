@@ -52,6 +52,26 @@ export const AutoField = <T extends Record<string, unknown>>({
         </Form.Item>
       );
 
+    case "multi-select":
+      return (
+        <Form.Item name={nameStr} label={label} rules={rules}>
+          <Select
+            mode="multiple"
+            placeholder={placeholder ?? `Chọn ${label}`}
+            options={options}
+            loading={loading}
+            disabled={disabled}
+            showSearch
+            allowClear
+            maxTagCount="responsive"
+            optionFilterProp="label"
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+          />
+        </Form.Item>
+      );
+
     case "number":
       return (
         <Form.Item name={nameStr} label={label} rules={rules}>
