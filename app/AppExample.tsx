@@ -81,13 +81,12 @@ const mockCities: Record<string, Option[]> = {
 // Mock fetch client-side - FIX LỖI "o.text is not a function"
 // =======================
 const fetchApi = (url: string): Promise<Response> => {
-  console.log(`🚀 [AutoForm Fetch] Calling: ${url}`);
+  console.log(` [AutoForm Fetch] Calling: ${url}`);
 
   return new Promise((resolve) => {
     setTimeout(() => {
       let data: Option[] = [];
 
-      // Logic lấy dữ liệu dựa trên URL (giữ nguyên logic của bạn)
       if (url.includes("/api/departments")) {
         data = mockDepartments;
       } else if (url.includes("/api/teams")) {
@@ -104,9 +103,8 @@ const fetchApi = (url: string): Promise<Response> => {
         data = mockCities[country] || [];
       }
 
-      console.log(`✅ [AutoForm Success] Data for ${url}:`, data);
+      console.log(`[AutoForm Success] Data for ${url}:`, data);
 
-      // TRẢ VỀ RESPONSE ĐÚNG CHUẨN
       resolve({
         ok: true,
         status: 200,
@@ -118,12 +116,10 @@ const fetchApi = (url: string): Promise<Response> => {
   });
 };
 
-// Override global fetch
 if (typeof window !== "undefined") {
   (window as any).fetch = fetchApi;
 }
 
-// Override global fetch for AutoForm
 if (typeof window !== "undefined") {
   (window as any).fetch = fetchApi;
 }
